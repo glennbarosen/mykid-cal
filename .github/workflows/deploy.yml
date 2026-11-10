@@ -30,3 +30,5 @@ jobs:
         with:
           git_remote_url: 'ssh://dokku@46.62.135.107:22/mykid-cal'
           ssh_private_key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
+          # Dokku's repo isn't the source of truth (it once got image deploys); GitHub is.
+          git_push_flags: '--force'
