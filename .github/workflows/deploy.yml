@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m unittest -v
+
+  deploy:
+    needs: test
+    if: github.repository == 'glennbarosen/mykid-cal'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to dokku
+        uses: dokku/github-action@v1.10.0
+        with:
+          git_remote_url: 'ssh://dokku@46.62.135.107:22/mykid-cal'
+          ssh_private_key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
